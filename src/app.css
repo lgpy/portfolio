@@ -1,0 +1,162 @@
+@layer ui-sdk;
+
+:root {
+	color-scheme: dark;
+	--ui-background: oklch(0.145 0 0);
+	--ui-foreground: oklch(0.985 0 0);
+	--ui-muted: oklch(0.226 0 0);
+	--ui-muted-foreground: oklch(0.706 0 0);
+	--ui-border: oklch(0.285 0 0);
+	--ui-input: oklch(0.52 0 0);
+	--ui-ring: oklch(0.333 0 0);
+	--ui-ring-border: oklch(0.62 0 0);
+	--ui-overlay: oklch(0 0 0 / 0.7);
+	--ui-shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px -8px oklch(0 0 0 / 0.6);
+	--ui-destructive: oklch(0.712 0.181 22.8);
+	--ui-font-size: 0.875rem;
+
+	--faint: oklch(0.5 0 0);
+	--surface: oklch(0.19 0 0);
+	--danger: oklch(0.712 0.181 22.8);
+	--gold: oklch(0.8 0.14 80);
+}
+
+html {
+	background: var(--ui-background);
+	color: var(--ui-foreground);
+	font-family: var(--ui-font-sans);
+	font-size: 15px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+body {
+	margin: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid var(--ui-border);
+	transition: border-color 150ms;
+}
+
+a:hover {
+	border-color: currentColor;
+}
+
+:focus-visible {
+	outline: 2px solid var(--ui-ring-border);
+	outline-offset: 2px;
+}
+
+.mono {
+	font-family: var(--ui-font-mono);
+}
+
+/* Toasts: a stack in the bottom corner. */
+[data-slot='toast-region'] {
+	position: fixed;
+	inset-block-end: 16px;
+	inset-inline-end: 16px;
+	z-index: 50;
+	width: min(340px, calc(100vw - 32px));
+	height: var(--toast-front-height);
+}
+
+[data-slot='toast-region'][data-expanded] {
+	height: calc(var(--toast-stack-height) + (var(--toast-count) - 1) * 12px);
+}
+
+[data-slot='toast'] {
+	--y: calc(var(--toast-index) * -10px);
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: calc(100 - var(--toast-index));
+	display: block;
+	box-sizing: border-box;
+	overflow: hidden;
+	height: var(--toast-height);
+	padding: 12px 14px;
+	border: 1px solid var(--ui-border);
+	background: var(--surface);
+	box-shadow: var(--ui-shadow);
+	font-size: 13px;
+	translate: var(--toast-swipe-x, 0px) calc(var(--y) + var(--toast-swipe-y, 0px));
+	scale: calc(1 - var(--toast-index) * 0.05);
+	transition-property: translate, scale, opacity, height;
+	transition-duration: 400ms;
+	user-select: none;
+}
+
+[data-slot='toast']:not([data-front], [data-expanded]) {
+	height: var(--toast-front-height);
+}
+
+[data-slot='toast'][data-expanded] {
+	--y: calc(-1 * (var(--toast-offset) + var(--toast-index) * 12px));
+	scale: 1;
+}
+
+[data-slot='toast'][data-starting-style] {
+	transition: none;
+}
+
+[data-slot='toast'][data-starting-style][data-front] {
+	--y: 100%;
+}
+
+[data-slot='toast']:is([data-starting-style]:not([data-front]), [data-ending-style]) {
+	opacity: 0;
+}
+
+[data-slot='toast'][data-swiping] {
+	transition: none;
+}
+
+[data-slot='toast-close']::before,
+[data-slot='toast-close']::after {
+	content: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-slot='toast'] {
+		transition-property: opacity;
+	}
+}
+
+/* A mascot in a project's icon tile: a bare button that bounces when pressed. */
+.mascot {
+	all: unset;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.mascot img {
+	width: 100%;
+	height: 100%;
+	padding: 3px;
+	box-sizing: border-box;
+	object-fit: contain;
+	pointer-events: none;
+}
+
+.mascot:focus-visible {
+	outline: 2px solid var(--ui-ring-border);
+	outline-offset: 2px;
+}
+
+/* The panel an easter egg opens under its project. */
+.egg {
+	margin-top: 14px;
+	padding: 14px;
+	border: 1px solid var(--ui-border);
+	background: var(--surface);
+	max-width: 440px;
+}
