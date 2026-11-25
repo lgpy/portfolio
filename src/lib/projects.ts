@@ -27,7 +27,7 @@ export const projects: Project[] = [
 		id: 'family-care',
 		name: 'Family Care',
 		blurb:
-			'A private Android app for a family sharing the care of their relatives: medicines with reminders, stock, appointments, allergies. Offline-first.',
+			'An Android app for families sharing the care of relatives: medicines with reminders, stock, appointments, allergies. Offline-first; the data stays with the family.',
 		short: 'Android app for family caregivers',
 		tags: ['kotlin', 'android'],
 		accent: '#8fd0a8',

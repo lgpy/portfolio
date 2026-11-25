@@ -1,30 +1,21 @@
-@layer ui-sdk;
-
 :root {
 	color-scheme: dark;
-	--ui-background: oklch(0.145 0 0);
-	--ui-foreground: oklch(0.985 0 0);
-	--ui-muted: oklch(0.226 0 0);
-	--ui-muted-foreground: oklch(0.706 0 0);
-	--ui-border: oklch(0.285 0 0);
-	--ui-input: oklch(0.52 0 0);
-	--ui-ring: oklch(0.333 0 0);
-	--ui-ring-border: oklch(0.62 0 0);
-	--ui-overlay: oklch(0 0 0 / 0.7);
-	--ui-shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px -8px oklch(0 0 0 / 0.6);
-	--ui-destructive: oklch(0.712 0.181 22.8);
-	--ui-font-size: 0.875rem;
+	--bg: oklch(0.145 0 0);
+	--fg: oklch(0.985 0 0);
+	--muted: oklch(0.706 0 0);
+	--border: oklch(0.285 0 0);
+	--ring: oklch(0.62 0 0);
+	--shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px -8px oklch(0 0 0 / 0.6);
+	--font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
 	--faint: oklch(0.5 0 0);
-	--surface: oklch(0.19 0 0);
-	--danger: oklch(0.712 0.181 22.8);
-	--gold: oklch(0.8 0.14 80);
 }
 
 html {
-	background: var(--ui-background);
-	color: var(--ui-foreground);
-	font-family: var(--ui-font-sans);
+	background: var(--bg);
+	color: var(--fg);
+	font-family: var(--font-sans);
 	font-size: 15px;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
@@ -37,7 +28,7 @@ body {
 a {
 	color: inherit;
 	text-decoration: none;
-	border-bottom: 1px solid var(--ui-border);
+	border-bottom: 1px solid var(--border);
 	transition: border-color 150ms;
 }
 
@@ -45,85 +36,19 @@ a:hover {
 	border-color: currentColor;
 }
 
+/* No double-tap zoom delay or grey tap flash on touch. */
+:where(a, button) {
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+
 :focus-visible {
-	outline: 2px solid var(--ui-ring-border);
+	outline: 2px solid var(--ring);
 	outline-offset: 2px;
 }
 
 .mono {
-	font-family: var(--ui-font-mono);
-}
-
-/* Toasts: a stack in the bottom corner. */
-[data-slot='toast-region'] {
-	position: fixed;
-	inset-block-end: 16px;
-	inset-inline-end: 16px;
-	z-index: 50;
-	width: min(340px, calc(100vw - 32px));
-	height: var(--toast-front-height);
-}
-
-[data-slot='toast-region'][data-expanded] {
-	height: calc(var(--toast-stack-height) + (var(--toast-count) - 1) * 12px);
-}
-
-[data-slot='toast'] {
-	--y: calc(var(--toast-index) * -10px);
-	position: absolute;
-	inset-inline: 0;
-	bottom: 0;
-	z-index: calc(100 - var(--toast-index));
-	display: block;
-	box-sizing: border-box;
-	overflow: hidden;
-	height: var(--toast-height);
-	padding: 12px 14px;
-	border: 1px solid var(--ui-border);
-	background: var(--surface);
-	box-shadow: var(--ui-shadow);
-	font-size: 13px;
-	translate: var(--toast-swipe-x, 0px) calc(var(--y) + var(--toast-swipe-y, 0px));
-	scale: calc(1 - var(--toast-index) * 0.05);
-	transition-property: translate, scale, opacity, height;
-	transition-duration: 400ms;
-	user-select: none;
-}
-
-[data-slot='toast']:not([data-front], [data-expanded]) {
-	height: var(--toast-front-height);
-}
-
-[data-slot='toast'][data-expanded] {
-	--y: calc(-1 * (var(--toast-offset) + var(--toast-index) * 12px));
-	scale: 1;
-}
-
-[data-slot='toast'][data-starting-style] {
-	transition: none;
-}
-
-[data-slot='toast'][data-starting-style][data-front] {
-	--y: 100%;
-}
-
-[data-slot='toast']:is([data-starting-style]:not([data-front]), [data-ending-style]) {
-	opacity: 0;
-}
-
-[data-slot='toast'][data-swiping] {
-	transition: none;
-}
-
-[data-slot='toast-close']::before,
-[data-slot='toast-close']::after {
-	content: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	[data-slot='toast'] {
-		transition-property: opacity;
-	}
+	font-family: var(--font-mono);
 }
 
 /* A mascot in a project's icon tile: a bare button that bounces when pressed. */
@@ -148,15 +73,104 @@ a:hover {
 }
 
 .mascot:focus-visible {
-	outline: 2px solid var(--ui-ring-border);
+	outline: 2px solid var(--ring);
 	outline-offset: 2px;
 }
 
-/* The panel an easter egg opens under its project. */
-.egg {
-	margin-top: 14px;
-	padding: 14px;
-	border: 1px solid var(--ui-border);
-	background: var(--surface);
-	max-width: 440px;
+/*
+ * LA Utils' honing egg upgrades the page. LaUtils.svelte puts a `hone-N` class on <html>
+ * for every tier reached, so each tier's styles stack on the ones below it.
+ */
+:root {
+	--gold: oklch(0.8 0.14 80);
+}
+
+.project .icon,
+.tags li,
+h3,
+.name {
+	transition:
+		box-shadow 600ms,
+		border-color 600ms,
+		color 600ms,
+		background-color 600ms;
+}
+
+html.hone-3 .project {
+	box-shadow:
+		inset 3px 0 0 var(--accent),
+		-14px 0 30px -18px var(--accent);
+}
+
+html.hone-6 h3,
+html.hone-6 .name {
+	font-weight: 800;
+	letter-spacing: 0.01em;
+}
+
+html.hone-9 .project .icon {
+	border-color: var(--gold);
+	box-shadow: 0 0 14px -4px var(--gold);
+}
+
+html.hone-12 {
+	--border: oklch(0.42 0.07 80);
+}
+
+html.hone-15 .tags li {
+	color: var(--gold);
+	border-color: color-mix(in oklch, var(--gold) 45%, transparent);
+}
+
+html.hone-18 .name {
+	background: linear-gradient(100deg, var(--gold) 30%, oklch(0.97 0.05 90) 50%, var(--gold) 70%) 0 0 / 250% 100%;
+	background-clip: text;
+	color: transparent;
+	animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+	to {
+		background-position: -250% 0;
+	}
+}
+
+html.hone-21 body {
+	background:
+		radial-gradient(1px 1px at 12% 18%, var(--gold), transparent),
+		radial-gradient(1px 1px at 78% 9%, var(--gold), transparent),
+		radial-gradient(1.5px 1.5px at 33% 62%, var(--gold), transparent),
+		radial-gradient(1px 1px at 90% 48%, var(--gold), transparent),
+		radial-gradient(1px 1px at 57% 85%, var(--gold), transparent),
+		radial-gradient(1.5px 1.5px at 8% 92%, var(--gold), transparent),
+		radial-gradient(ellipse at top, oklch(0.8 0.14 80 / 0.08), transparent 60%);
+	background-attachment: fixed;
+}
+
+html.hone-25 {
+	--fg: oklch(0.93 0.07 88);
+	--muted: oklch(0.76 0.07 82);
+}
+
+html.hone-25 .project {
+	box-shadow:
+		inset 3px 0 0 var(--gold),
+		-14px 0 30px -18px var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.hone-18 .name {
+		animation: none;
+	}
+}
+
+/* The jelly cat's makeover of your cursor: an arrow with a face. Pink over things you can click. */
+html.jelly-cursor,
+html.jelly-cursor * {
+	cursor: url('/cursors/jelly.svg') 3 2, auto !important;
+}
+
+html.jelly-cursor :is(a, button, [role='button']),
+html.jelly-cursor :is(a, button, [role='button']) * {
+	cursor: url('/cursors/jelly-pointer.svg') 3 2, pointer !important;
 }
