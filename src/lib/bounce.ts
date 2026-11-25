@@ -10,3 +10,4 @@ export function bounce(target: Element | null) {
 		{ duration: 300, easing: 'ease-out' }
 	);
 }
+

@@ -34,7 +34,7 @@
 		grid-template-columns: 44px 1fr auto;
 		gap: 16px;
 		padding: 18px 0 18px 14px;
-		border-top: 1px solid var(--ui-border);
+		border-top: 1px solid var(--border);
 		box-shadow: inset 2px 0 0 var(--accent);
 	}
 
@@ -61,7 +61,7 @@
 	p {
 		margin: 4px 0 0;
 		font-size: 14px;
-		color: var(--ui-muted-foreground);
+		color: var(--muted);
 		max-width: 60ch;
 	}
 
@@ -75,11 +75,11 @@
 	}
 
 	.tags li {
-		font-family: var(--ui-font-mono);
+		font-family: var(--font-mono);
 		font-size: 11px;
 		padding: 1px 6px;
-		border: 1px solid var(--ui-border);
-		color: var(--ui-muted-foreground);
+		border: 1px solid var(--border);
+		color: var(--muted);
 	}
 
 	.links {

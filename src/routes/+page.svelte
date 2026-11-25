@@ -1,26 +1,11 @@
 <script lang="ts">
 	import ProjectRow from '#lib/components/ProjectRow.svelte';
-	import DoseReminder from '#lib/eggs/DoseReminder.svelte';
 	import LaUtils from '#lib/eggs/LaUtils.svelte';
 	import Tabbyfin from '#lib/eggs/Tabbyfin.svelte';
-	import Terminal from '#lib/eggs/Terminal.svelte';
+	import { GOLD, hone, vandal } from '#lib/eggs/state.svelte.js';
 	import { projects } from '#lib/projects.js';
 
 	const byId = Object.fromEntries(projects.map((p) => [p.id, p]));
-
-	// Phones have no arrow keys: seven taps on the name open the terminal too.
-	let terminal = $state(false);
-	let taps = 0;
-	let tapTimer: ReturnType<typeof setTimeout> | undefined;
-
-	function tapName() {
-		clearTimeout(tapTimer);
-		tapTimer = setTimeout(() => (taps = 0), 1500);
-		if (++taps >= 7) {
-			taps = 0;
-			terminal = true;
-		}
-	}
 </script>
 
 <svelte:head>
@@ -33,19 +18,19 @@
 
 <div class="page">
 	<header>
-		<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-		<span class="name mono" onclick={tapName}>lgpy</span>
+		<div class="who">
+			<span class="name mono">lgpy</span>
+			{#if hone.level > 0}<span class="honed mono">+{hone.level}</span>{/if}
+			<span class="tagline"
+				>{vandal['header .tagline'] ?? (hone.level >= GOLD ? 'I build stuff. Fully honed.' : 'I build stuff')}</span
+			>
+		</div>
 		<nav aria-label="Elsewhere">
 			<a href="https://github.com/lgpy">github</a>
 		</nav>
 	</header>
 
 	<main>
-		<p class="intro">
-			<strong>I build small, careful software:</strong> native apps, tools for games, and things for
-			my family. Here's what I've made.
-		</p>
-
 		<h2 class="label mono">Projects</h2>
 		<Tabbyfin project={byId['tabbyfin']} />
 		<ProjectRow project={byId['family-care']}>
@@ -61,12 +46,8 @@
 
 	<footer class="mono">
 		<span>lgpy.dev</span>
-		<span aria-hidden="true">↑↑↓↓←→←→BA</span>
 	</footer>
 </div>
-
-<DoseReminder />
-<Terminal bind:open={terminal} />
 
 <style>
 	.page {
@@ -80,40 +61,31 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-bottom: 16px;
-		border-bottom: 1px solid var(--ui-border);
+		border-bottom: 1px solid var(--border);
 		margin-bottom: 40px;
 	}
 
 	.name {
 		font-weight: 600;
 		font-size: 16px;
-		user-select: none;
 	}
 
 	nav {
 		font-size: 14px;
-		color: var(--ui-muted-foreground);
+		color: var(--muted);
 	}
 
-	.intro {
-		font-size: 17px;
-		color: var(--ui-muted-foreground);
-		max-width: 46ch;
-		margin: 0 0 40px;
+	.who {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		line-height: 1;
 	}
 
-	.intro strong {
-		color: var(--ui-foreground);
-		font-weight: 500;
-	}
-
-	.label {
-		margin: 0 0 10px;
-		font-size: 11px;
-		font-weight: 400;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--ui-muted-foreground);
+	.honed {
+		margin-inline-start: -8px;
+		font-size: 12px;
+		color: var(--gold);
 	}
 
 	.pill {
@@ -124,12 +96,26 @@
 		stroke-width: 1.75;
 	}
 
+	.tagline {
+		font-size: 13px;
+		color: var(--faint);
+	}
+
+	.label {
+		margin: 0 0 10px;
+		font-size: 11px;
+		font-weight: 400;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+
 	footer {
 		display: flex;
 		justify-content: space-between;
 		margin-top: 8px;
 		padding-top: 16px;
-		border-top: 1px solid var(--ui-border);
+		border-top: 1px solid var(--border);
 		font-size: 12px;
 		color: var(--faint);
 	}
@@ -137,10 +123,6 @@
 	@media (max-width: 560px) {
 		.page {
 			padding: 20px 16px 32px;
-		}
-
-		.intro {
-			font-size: 15px;
 		}
 	}
 </style>
